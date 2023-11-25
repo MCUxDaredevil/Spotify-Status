@@ -40,7 +40,7 @@ def refreshToken():
         "refresh_token": SPOTIFY_REFRESH_TOKEN,
     }
 
-    headers = {"Authorization": "Basic {}".format(getAuth())}
+    headers = {"Authorization": f"Basic {getAuth()}"}
     response = requests.post(REFRESH_TOKEN_URL, data=data, headers=headers)
 
     try:
@@ -56,9 +56,7 @@ def recentlyPlayed():
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.get(RECENTLY_PLAYING_URL, headers=headers)
 
-    if response.status_code == 204:
-        return {}
-    return response.json()
+    return {} if response.status_code == 204 else response.json()
 
 
 def nowPlaying():
@@ -66,9 +64,7 @@ def nowPlaying():
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.get(NOW_PLAYING_URL, headers=headers)
 
-    if response.status_code == 204:
-        return {}
-    return response.json()
+    return {} if response.status_code == 204 else response.json()
 
 
 def barGen(barCount):
@@ -91,7 +87,7 @@ def getTemplate():
         templates = json.loads(file.read())
         return templates["templates"][templates["current-theme"]]
     except Exception as e:
-        print(f"Failed to load templates.")
+        print("Failed to load templates.")
         return FALLBACK_THEME
 
 
@@ -102,7 +98,7 @@ def loadImageB64(url):
 
 def makeSVG(data, background_color, border_color):
     barCount = 84
-    contentBar = "".join(["<div class='bar'></div>" for i in range(barCount)])
+    contentBar = "".join(["<div class='bar'></div>" for _ in range(barCount)])
     barCSS = barGen(barCount)
 
     if data == {} or data["item"] == "None" or data["item"] is None:
